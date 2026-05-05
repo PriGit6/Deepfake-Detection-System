@@ -2,5 +2,5 @@ venv/
 data/
 *.pth
 *.h5
-__pycache__/
+__pycache__/4
 .DS_Store
