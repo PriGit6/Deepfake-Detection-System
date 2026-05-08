@@ -1,6 +1,5 @@
 MAY 2026
 
-Log #1:
 
 # Deepfake Detection with ResNet-18 & PyTorch
 
