@@ -2,62 +2,60 @@ MAY 2026
 
 Log #1:
 
-# 🛡️ Deepfake Detection Project: Development Log
+# Deepfake Detection with ResNet-18 & PyTorch
 
-**Author:** Priyaj Shrestha  
-**Date:** May 2026  
-**Status:** 🟢 Training Phase (Epoch 1 Complete)
+![Python](https://img.shields.io/badge/python-3.9+-blue.svg)
+![PyTorch](https://img.shields.io/badge/PyTorch-2.0+-ee4c2c.svg)
+![License](https://img.shields.io/badge/license-MIT-green.svg)
 
----
+## Project Overview
+This project is a high-performance image classification system designed to detect AI-generated (Deepfake) faces. Using **Transfer Learning** and the **ResNet-18** architecture, the model was trained on a massive dataset of 140,000 images to identify digital artifacts and inconsistencies typical of GAN-generated imagery.
 
-## 📋 Project Overview
-A machine learning pipeline designed to identify AI-generated faces. This project utilizes deep residual learning (ResNet) to detect subtle artifacts in synthetic imagery that are often invisible to the human eye.
-
-## 💻 Technical Stack
-* **Language:** Python 3.9
-* **Deep Learning:** PyTorch, Torchvision
-* **Optimization:** Apple Silicon MPS (Metal Performance Shaders) for GPU acceleration
-* **Architecture:** ResNet-18 (Transfer Learning)
+The system is optimized for **Apple Silicon (M-series)** hardware, leveraging the Metal Performance Shaders (MPS) backend for GPU-accelerated training and inference.
 
 ---
 
-## 🛠️ Implementation Details
+## Performance Metrics
+* **Final Test Accuracy:** `85.08%`
+* **Evaluation Set:** 20,000 previously unseen images.
+* **Hardware:** Trained on MacBook Pro (MPS/GPU).
+* **Training Time:** 5 Epochs with a steady loss convergence from `0.47` to `0.38`.
+
+---
+
+## Technical Architecture
 
 ### 1. Data Pipeline
-* **Dataset:** Kaggle 140k Real/Fake Faces.
-* **Pre-processing:** * Images resized to `224x224`.
-    * Normalized using ImageNet stats: `mean=[0.485, 0.456, 0.406]`, `std=[0.229, 0.224, 0.225]`.
-* **Loaders:** Implemented `DataLoader` with batch size of 32 and multi-set partitioning (Train/Val/Test).
+* **Dataset:** Real vs. Fake Faces (140k images).
+* **Preprocessing:** * Dynamic resizing to `224x224` pixels.
+    * Normalization based on ImageNet statistics ($\mu, \sigma$).
+    * Efficient data loading via PyTorch `DataLoaders`.
 
-### 2. Model Architecture
-I utilized a **Transfer Learning** strategy to leverage weights from a model pre-trained on the ImageNet dataset.
-* **Base:** ResNet-18 (Feature extractor frozen).
-* **Modified Head:**
-    * `Linear(512, 256)` -> `ReLU` -> `Dropout(p=0.4)` -> `Linear(256, 2)`.
-    * `LogSoftmax` output for binary classification.
+### 2. Model Design
+* **Base:** Pre-trained ResNet-18 (Weights: `DEFAULT`).
+* **Custom Classification Head:**
+    * `Linear(512 -> 256)`
+    * `ReLU` Activation
+    * `Dropout(0.4)` for regularization and overfit prevention.
+    * `Linear(256 -> 2)`
+    * `LogSoftmax` for stable probability output.
 
-### 3. Training Configuration
+### 3. Optimization Strategy
+* **Optimizer:** Adam ($LR = 0.001$).
 * **Loss Function:** `NLLLoss` (Negative Log Likelihood).
-* **Optimizer:** `Adam` (Learning Rate: 0.001).
-* **Hardware:** Initialized `torch.device("mps")` to utilize MacBook Pro GPU cores.
+* **Device:** `torch.device("mps")` for Apple GPU acceleration.
 
 ---
 
-## 📈 Current Metrics
-| Metric | Value | Status |
-| :--- | :--- | :--- |
-| **Epoch 1 Avg Loss** | 0.4722 | ✅ Success |
-| **Random Guess Baseline** | ~0.6931 | 📉 Beaten |
-| **Hardware Device** | Apple MPS | 🚀 Active |
-
----
-
-## 📂 Directory Structure
+##  Project Structure
 ```text
 deepfake-detector/
-├── data/               # 140k JPG images (local only)
-├── models/             # Exported .pth weights
-└── src/
-    ├── data_loader.py  # Image transformation logic
-    ├── model.py        # Neural Network architecture
-    └── train.py        # Training & Optimization loop
+├── src/
+│   ├── data_loader.py   # Dataset loading & transformations
+│   ├── model.py         # Neural Network architecture
+│   ├── train.py         # Training loop & logic
+│   └── evaluate.py      # Performance testing script
+├── models/
+│   └── deepfake_detector.pth # Trained model weights
+├── FINAL_PROJECT_LOG.md  # Detailed development journal
+└── README.md             # Project documentation
