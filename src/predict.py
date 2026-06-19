@@ -11,7 +11,7 @@ def predict_image(image_path):
     
     # 2. Load the Model
     model = get_model().to(device)
-    model.load_state_back = torch.load('models/deepfake_detector.pth', map_location=device)
+     model.load_state_dict(torch.load('models/deepfake_detector.pth', map_location=device))
     model.eval()
 
     # 3. Define the same transformations used during training
